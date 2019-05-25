@@ -567,7 +567,13 @@ so that
 E (Z_{t})=E\left[E\left(Z_{t} | F_{t-1}\right)\right]=0
 \end{equation*}
 
-\noindent Next, we try to calculate the variance of $Z_t$. Supposed that sequence $\{Z_t\}$ exists strictly stationary solution, then
+\noindent Next, we try to calculate the variance of $Z_t$. Supposed that sequence $\{Z_t\}$ exists strictly stationary solution, since
+\begin{equation*}
+\begin{aligned}
+E\left(Z_{t}^{2} | F_{t-1}\right) = E\left(\sigma_t^2\epsilon_t^2 | F_{t-1}\right) &= E\left((\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1}\sigma_{t-1}^{2})\epsilon_t^2 | F_{t-1}\right)\\ &= (\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1}\sigma_{t-1}^{2}) E\left(\epsilon_t^2 | F_{t-1}\right)\\ &= \sigma_t^2 E\left(\epsilon_t^2 | F_{t-1}\right)\\ &= \sigma_t^2
+\end{aligned}
+\end{equation*}
+then
 \begin{equation*}
 \begin{aligned} \operatorname{Var}\left(Z_{t}\right) &=E\left(Z_{t}^{2}\right) \\ &=E\left[E\left(Z_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[E\left(\sigma_{t}^{2} \epsilon_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[\sigma_{t}^{2} E\left(\epsilon_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[\sigma_{t}^{2} E\left(\epsilon_{t}^{2}\right)\right] \\ &=E\left[\sigma_{t}^{2}\right] \\ &=E\left[\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1} \sigma_{t-1}^{2}\right] \\ &= \alpha_{0}+\alpha_{1} E\left(Z_{t-1}^{2}\right)+\beta_{1} E\left(\sigma_{t-1}^{2}\right)\\ &=\alpha_{0}+\alpha_{1} E\left(Z_{t-1}^{2}\right)+\beta_{1} E\left[E\left(Z_{t-1}^{2} | F_{t-2}\right)\right] \\ &=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) E\left(Z_{t-1}^{2}\right) \end{aligned}
 \end{equation*}
