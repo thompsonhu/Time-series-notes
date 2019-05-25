@@ -1,0 +1,819 @@
+\documentclass{article}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{changepage,lipsum,titlesec}% http://ctan.org/pkg/{changepage,lipsum,titlesec}
+\usepackage{enumitem}
+\usepackage{underscore} % Allows literal underscores
+\usepackage{fixltx2e} % Allows \textsubscript{}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{color}
+\usepackage{pdfpages}
+\usepackage{tikz} % For diagrams
+\usepackage{hyperref}
+\usepackage{fancyhdr} % For headers and footers
+\usepackage{geometry}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+
+ \geometry{
+ a4paper, % Change this if you intend to print on a different paper size, such as letter paper.
+ total={210mm,297mm},
+ left=20mm,
+ right=20mm,
+ top=30mm,
+ bottom=30mm,
+ }
+\pagestyle{fancy}
+
+%Settings
+\newcommand{\courseName}{MAFS5130 Time Series Analysis} % Insert course name here
+\title{\courseName}
+\author{Thompson Hu}
+\date{} % If you'd like to have a date, place it here
+
+% Headers and footers. See documentation for 'fancyhdr' package for more information.
+\lhead{\courseName} % Left header
+\chead{} % Center header
+\rhead{} % Right header
+\lfoot{} % Left footer
+\cfoot{\thepage} % Center footer
+\rfoot{} % Right footer
+
+% Lecture block settings.
+\lstset{
+  basicstyle= \normalfont,
+  mathescape=true, % Allows for adding equations.
+  escapechar={~}, % You may wish to change this symbol, if you use ~ in your notes a lot.
+  breaklines=true, % Automatic text wrapping.
+  columns=fullflexible
+}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand*\rmdefault{ppl} %Set font
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section{Basic concepts}
+The foundation of time series analysis is stationarity.
+
+\subsection{Strictly stationary process}
+For $n$ and $t_1,t_2,\cdots,t_n$, if
+\begin{equation*}
+\left(X_{t_{1}}, \cdots, X_{t_{n}}\right) \stackrel{d i s t}{=}\left(X_{t_{1}+k}, \cdots, X_{t_{n}+k}\right), \forall k
+\end{equation*}
+we say $\{X_t\}$ is strictly stationary process.
+
+\subsection{Weakly stationary process}
+If $\{X_t\}$ satisfied that
+\begin{itemize}
+	\item $E\left(X_{t}^{2}\right)<\infty$;
+	\item $E(X_t) = \mu$, which is constant;
+	\item $\operatorname{Cov}\left(X_{t}, X_{t+k}\right)$ is not related to $t$ for $k$.
+\end{itemize}
+we say $X_t$ is weakly stationary process.
+
+\subsection{Autocorrelation function (ACF)}
+Supposed $X_t$ is weakly stationary sequence, then
+\begin{equation}\label{acf1}
+\rho\left(X_{t-k}, X_{t}\right)=\frac{\operatorname{Cov}\left(X_{t-k}, X_{t}\right)}{\sqrt{\operatorname{Var}\left(X_{t-k}\right) \operatorname{Var}\left(X_{t}\right)}}=\frac{\gamma_{k}}{\sqrt{\gamma_{0} \gamma_{0}}}=\frac{\gamma_{k}}{\gamma_{0}}, k=0,1, \ldots, \forall t
+\end{equation}
+We say $\{\rho_k, k = 0, 1, \dots\}$ is autocorrelation function (ACF) of $\{X_t\}$ and $\rho_0 = 1$.\\
+
+\noindent If weakly stationary sequence $\{X_t\}$ satisfy that $\rho_k = 0, k = 1, 2, \dots$, then $\{X_t\}$ is \textbf{white noise} sequence.\\
+
+\noindent From the definition \eqref{acf1}, we know
+\begin{equation*}
+\rho_k = \frac{\operatorname{Cov}\left(X_{t-k}, X_{t}\right)}{\operatorname{Var}\left(X_{t}\right)} = \frac{\operatorname{Cov}\left(X_{t}, X_{t-k}\right)}{\operatorname{Var}\left(X_{t}\right)} = \rho_{-k}
+\end{equation*}
+
+\subsection{Partial ACF (PACF)}
+Supposed $X_t$ is a stationary sequence, the conditional correlation
+\begin{equation*}
+\operatorname{Corr}\left(X_{t}, X_{t+k} | X_{t+1}, \cdots, X_{t+k-1}\right) = \frac{\operatorname{Cov}\left[\left(X_{t}-\hat{X}_{t}\right)\left(X_{t+k}-\hat{X}_{t+k}\right)\right]}{\sqrt{\operatorname{Var}\left(X_{t}-\hat{X}_{t}\right) \operatorname{Var}\left(X_{t+k}-\hat{X}_{t+k}\right)}}
+\end{equation*}
+is called the PACF of $X_t$ and $X_{t+k}$, denoted by $\phi_{kk}$, where $\hat{X}_{t}=E\left(X_{t} | X_{t+1}, \cdots, X_{t+k-1}\right).$\\
+
+\noindent From the formula : $\phi_{11} = \rho_1$ and
+\begin{equation*}
+\phi_{kk} = \frac{
+\left| \begin{array}{cccccc}{1} & {\rho_{1}} & {\rho_{2}} & {\cdots} & {\rho_{k-2}} & {\rho_{1}} \\ {\rho_{1}} & {1} & {\rho_{1}} & {\cdots} & {\rho_{k-3}} & {\rho_{2}} \\ { } & { } & {\cdots} & { } & { } \\ { } & { } & {\cdots} \\ { } & { } & {\cdots} \\ {\rho_{k-1}} & {\rho_{k-2}} & {\rho_{k-3}} & {\cdots} & {\rho_{1}} & {\rho_{k}}\end{array}\right|}{
+\left| \begin{array}{cccccc}{1} & {\rho_{1}} & {\rho_{2}} & {\cdots} & {\rho_{k-2}} & {\rho_{k-1}} \\ {\rho_{1}} & {1} & {\rho_{1}} & {\cdots} & {\rho_{k-3}} & {\rho_{k-2}} \\ { } & { } & {\cdots} & { } & { } \\ { } & { } & {\cdots} \\ {\rho_{k-1}} & {\rho_{k-2}} & {\rho_{k-3}} & {\cdots} & {\rho_{1}} & {1}\end{array}\right|
+}
+\end{equation*}
+we know the key feature is that PACF cuts off at lag p for an AR(p) model.
+
+\subsection{Ljung-Box test}
+Box and Pierce presented portmanteau statistic
+\begin{equation}\label{boxtest1}
+Q_{*}(m)=T \sum_{j=1}^{m} \hat{\rho}_{j}^{2}
+\end{equation}
+in 1970 to test
+$$
+H_{0} : \rho_{1}=\cdots=\rho_{m}=0 \longleftrightarrow H_{a} : \rho_i \neq 0\ \text{for some } i 
+$$
+
+\noindent In 1978, Ljung and Box improved such method by changing previous statistic \eqref{boxtest1} as
+\begin{equation*}
+Q(m)=T(T+2) \sum_{j=1}^{m} \frac{\hat{\rho}_{j}^{2}}{T-j}
+\end{equation*}
+
+\noindent If $Q(m) > \chi_m^2(\alpha)$ or p-value is less than $\alpha$, then we reject $H_0$.
+
+\subsection{Linear time series}
+$X_t$ is linear if $X_t$ can be written as
+\begin{equation*}
+X_{t}=\mu+\sum_{i=0}^{\infty} \psi_{i} Z_{t-i}
+\end{equation*}
+where $\mu$ is a constant, $\psi_0 = 1$ and $\{Z_t\}$ is a sequence of white noises.
+
+\subsection{Information criterion}
+\begin{itemize}
+	\item Akaike information criterion
+	\begin{equation*}
+	\text{AIC}(k) = \ln \left(\hat{\sigma}_{k}^{2}\right)+\frac{2 k}{T}
+	\end{equation*}
+	for an AR(k) model, where $\sigma_k^2$ is the MLE of residual variance.
+	
+	\item BIC criterion
+	\begin{equation*}
+	\text{BIC}(k) = \ln \left(\hat{\sigma}_{k}^{2}\right)+\frac{k \ln (T)}{T}
+	\end{equation*}
+\end{itemize}
+
+
+\section{ARMA model}
+\subsection{Auto Regression (AR) model}
+\subsubsection{AR(1) model}
+The form of AR(1) can be written as:
+\begin{equation}\label{AR1}
+X_{t}=\phi_{0}+\phi_{1} X_{t-1}+Z_{t}
+\end{equation}
+\noindent where $\phi_0$ and $\phi_1$ are real numbers, which are referred to as parameters. $Z_t$ is white noise with mean zero and variance $\sigma^2$. \\
+
+\noindent \textbf{Conditional expectation}:
+\begin{equation*}
+E\left(X_{t} | X_{t-1}\right)=E\left(\phi_{0}+\phi_{1} X_{t-1}+Z_{t} | X_{t-1}\right)=\phi_{0}+\phi_{1} X_{t-1}
+\end{equation*}
+
+\noindent Under the stationarity\footnote{necessary and sufficient condition $|\phi| < 1$} condition, we can get
+\begin{equation*}
+\mu = \phi_0 + \phi_1\mu \longrightarrow E\left(X_{t}\right) = \mu = \frac{\phi_0}{1-\phi_1}
+\end{equation*}
+
+\noindent \textbf{Conditional variance}:
+\begin{equation*}
+\operatorname{Var}\left(X_{t} | X_{t-1}\right)=\sigma^{2}
+\end{equation*}
+
+\noindent Under the stationarity condition, we can get
+\begin{equation*}
+\begin{array}{ll} {\operatorname{Var}\left(X_{t}\right) } & ={\operatorname{Var}\left(\phi_0 + \phi_1X_{t-1} + Z_t\right)} \\ & ={\phi_1^2 \operatorname{Var}\left(X_{t-1}\right) + \operatorname{Var}\left(Z_{t}\right)} \\ & ={\phi_1^2 \operatorname{Var}\left(X_{t-1}\right) + \sigma^2}
+\end{array}
+\end{equation*}
+
+\noindent so we finally get\footnote{if $\operatorname{Var}\left(X_{t}\right) > 0$, then $1 - \phi_1^2 > 0$, so $\phi_1^2 < 1$.}
+\begin{equation*}
+\operatorname{Var}\left(X_{t}\right) = \frac{\sigma^2}{1 - \phi_1^2}
+\end{equation*}
+
+\noindent \textbf{The ACF of AR(1)}: \\
+
+\noindent We can rewrite the formula \eqref{AR1} as:
+\begin{equation*}
+X_{t}-\mu=\phi_{1}\left(X_{t-1}-\mu\right)+Z_{t}
+\end{equation*}
+
+\noindent If we times $X_t$ in two sides and take expectation, we know $Z_t$ is independent to sequence $\{X_t\}$, then
+\begin{equation*}
+E\left[X_{t-k}\left(X_{t}-\mu\right)\right]=\phi_{1} E\left[X_{t-k}\left(X_{t-1}-\mu\right)\right]+E\left[Z_tX_{t-k}\right]=\phi_{1} E\left[X_{t-k}\left(X_{t-1}-\mu\right)\right]
+\end{equation*}
+
+\noindent We know that
+\begin{equation*}
+\gamma_k = \operatorname{Cov}\left(X_{t-k}, (X_{t} - \mu)\right) = E\left[X_{t-k}\left(X_{t}-\mu\right)\right]
+\end{equation*}
+
+\noindent so we can get
+\begin{equation*}
+\gamma_k = \phi_{1}\gamma_{k-1}, \forall k>0
+\end{equation*}
+
+\noindent so
+\begin{equation*}
+\gamma_{k}=\phi_1 \gamma_{k-1}=\phi_1^{2} \gamma_{k-2}=\cdots=\phi_1^{k} \gamma_{0}
+\end{equation*}
+
+\noindent so
+\begin{equation*}
+\rho_{k}=\frac{\gamma_{k}}{\gamma_{0}}=\phi_1^{k}
+\end{equation*}
+
+\noindent In general, $\rho_k = \phi_1^k$ and ACF $\rho_k$ decays exponentially as k increases. \\
+
+\noindent \textbf{Forecast}: \\
+\begin{itemize}
+	\item 1-step ahead forecast at time $n$, the forecast origin:
+	\begin{equation*}
+	\hat{X}_{n}(1) = E\left(X_{n+1}| \mathscr{F}_n\right) = E\left(\phi_{0}+\phi_{1} X_{n} + Z_{n+1}| \mathscr{F}_n\right) = \phi_{0}+\phi_{1} X_{n}
+	\end{equation*}
+	
+	\noindent then 1-step ahead forecast error:
+	\begin{equation*}
+	e_{n}(1)=X_{n+1}-\hat{X}_{n}(1)=Z_{n+1}
+	\end{equation*}
+	
+	\noindent Variance of 1-step ahead forecast error:
+	\begin{equation*}
+	\operatorname{Var}\left[e_{n}(1)\right]=\operatorname{Var}\left(Z_{n+1}\right)=\sigma^{2}
+	\end{equation*}
+	
+	\item 2-step ahead forecast:
+	\begin{equation*}
+	\hat{X}_{n}(2) = E\left(X_{n+2}| \mathscr{F}_n\right) = E\left(\phi_{0}+\phi_{1} X_{n+1} + Z_{n+2}| \mathscr{F}_n\right) = \phi_{0}+\phi_{1} \hat{X}_{n}(1)
+	\end{equation*}
+	
+	\noindent then 1-step ahead forecast error:
+	\begin{equation*}
+	\begin{array}{ll} {e_{n}(2)} & = {X_{n+2} - \hat{X}_{n}(2)}\\ & = {\phi_{0} + \phi_{1}X_{n+1} + Z_{n+2} - \phi_{0} - \phi_{1} \hat{X}_{n}(1)}\\ & = {\phi_{1}X_{n+1} + Z_{n+2} - \phi_{1} \hat{X}_{n}(1)}\\ & = {\phi_{1}(\phi_{0}+\phi_{1} X_{n}+Z_{n+1}) + Z_{n+2} - \phi_1(\phi_{0}+\phi_{1} X_{n})}\\ & = {Z_{n+2} + \phi_1 Z_{n+1}}
+	\end{array}
+	\end{equation*}
+	
+	\noindent Variance of 1-step ahead forecast error:
+	\begin{equation*}
+	\operatorname{Var}\left[e_{n}(2)\right]=\operatorname{Var}\left(Z_{n+2} + \phi_1 Z_{n+1}\right)=(1+\phi_1^2)\sigma^{2}
+	\end{equation*}
+	
+	\noindent which is greater than or equal to $\operatorname{Var}\left[e_{n}(1)\right]$, implying that uncertainty in forecasts increases as the number of step increases.
+\end{itemize}
+
+\noindent \textbf{Compact form}:\\
+
+\noindent Formula \eqref{AR1} also can be written as:
+\begin{equation*}
+\left(1-\phi_{1} B\right) X_{t}=\phi_{0}+Z_{t}
+\end{equation*}
+where $B$ is lag operator.
+
+\subsubsection{AR(2) model}
+The form of AR(2) can be written as:
+\begin{equation}\label{AR2}
+X_{t}=\phi_{0}+\phi_{1} X_{t-1}+\phi_{2} X_{t-2}+Z_{t}
+\end{equation}
+
+\noindent or
+\begin{equation*}
+\left(1-\phi_{1} B-\phi_{2} B^{2}\right) X_{t}=\phi_{0}+Z_{t}
+\end{equation*}
+
+\noindent \textbf{Staionarity condition}: all roots of $\left(1-\phi_{1} z-\phi_{2} z^{2}\right)=0$ lie outside the unit circle.\\
+
+\noindent If we consider reciprocal of root $z$, we can rewrite the characteristic equation $\left(1-\phi_{1} z-\phi_{2} z^{2}\right)=0$ as
+\begin{equation}\label{AR21}
+\left(\pi^{2} - \phi_{1} \pi - \phi_{2} \right) = 0
+\end{equation}
+where the $\pi$ is the reciprocal of $z$. Since $|z| > 1$, we know that $|\pi| < 1$.\\
+
+\noindent Supposed $\pi_1$ and $\pi_2$ are the roots of \eqref{AR21}, then we can get
+\begin{equation*}
+\left\{\begin{array}{cl}{\pi_1 + \pi_2 } & = {\phi_1}\\
+{\pi_1 \pi_2} & = {-\phi_2}
+\end{array}\right.
+\end{equation*}
+
+\noindent While
+\begin{equation*}
+\begin{array}{cl}{\phi_1 + \phi_2 - 1} & = {\pi_1 + \pi_2 - \pi_1\pi_2 - 1}\\
+& = {(\pi_1-1)(1-\pi_2)} < 0
+\end{array}
+\end{equation*}
+
+\noindent and
+\begin{equation*}
+\begin{array}{cl}{\phi_1 - \phi_2 - 1} & = {- \pi_1\pi_2 - \pi_1 - \pi_2 - 1}\\
+& = {- (\pi_1 + 1)(\pi_2 + 1)} < 0
+\end{array}
+\end{equation*}
+
+\noindent so we get
+\begin{equation*}
+\left\{\begin{array}{lr}{\phi_1 + \phi_2 - 1 < 0}\\ {\phi_1 - \phi_2 - 1 < 0}
+\end{array}\right. \longrightarrow \phi_2 < 1 \pm \phi_1
+\end{equation*}
+
+\noindent Since $|\pi_1| < 1, |\pi_2| < 1$, we can get $|\phi_2| = |\pi_1\pi_2| < 1$, thus
+\begin{equation*}
+\left\{\begin{array}{cc}{|\phi_2| < 1}\\
+{\phi_2 < 1 \pm \phi_1}	
+\end{array}\right.
+\end{equation*}
+
+\noindent \textbf{Stochastic business cycle}: As the characteristic equation is
+\begin{equation*}\label{key}
+1-\phi_1 z - \phi_2 z^2 = 0,
+\end{equation*}
+the discriminant of root is $\Delta = \phi_1^2 + 4\phi_2$.\\
+
+\noindent If $\phi_{1}^{2}+4 \phi_{2}<0$, the root is complex. The roots can be written as:
+\begin{equation*}
+z_{1}, z_{2}=\frac{\phi_{1}}{-2 \phi_{2}} \pm i \frac{\sqrt{\left|\phi_{1}^{2}+4 \phi_{2}\right.} |}{-2 \phi_{2}}
+\end{equation*}
+
+\noindent then the modulus is
+\begin{equation*}
+\left|z_{i}\right|=\frac{1}{\sqrt{-\phi_{2}}}
+\end{equation*}
+
+\noindent Since $x = |x| (\cos \theta + i \sin \theta)$, then radian is
+\begin{equation*}
+\theta=\cos ^{-1} \frac{\phi_{1}}{2 \sqrt{-\phi_{2}}}
+\end{equation*}
+
+\noindent so the cycle of this radian is
+\begin{equation*}
+k = \frac{2\pi}{\cos ^{-1} \phi_{1} / (2 \sqrt{-\phi_{2}})}
+\end{equation*}
+
+\noindent If we denote the solutions of the polynomial as $a \pm b i$, where $i = \sqrt{-1}$, then
+\begin{equation*}
+x = a \pm b i = \sqrt{a^2 + b^2} (\cos \theta + i \sin \theta)
+\end{equation*}
+
+\noindent so that
+\begin{equation*}
+k=\frac{2 \pi}{\cos ^{-1}\left(a / \sqrt{a^{2}+b^{2}}\right)}
+\end{equation*}
+
+\noindent \textbf{The ACF of AR(2)}:\\
+
+\noindent The \eqref{AR2} can be rewritten as
+\begin{equation*}
+X_{t} - \mu = \phi_{1} (X_{t-1} - \mu) + \phi_{2} (X_{t-2} - \mu) + Z_{t}
+\end{equation*}
+
+\noindent If we times $X_{t-k}$ in two sides and take expectation, then
+\begin{equation*}
+\begin{array}{ll} {E\left[X_{t-k}\left(X_{t}-\mu\right)\right] } & = {\phi_{1} E\left[X_{t-k}\left(X_{t-1}-\mu\right)\right] + \phi_{2} \left[X_{t-k}(X_{t-2} - \mu)\right] + E\left[Z_tX_{t-k}\right]}\\ & = {\phi_{1} E\left[X_{t-k}\left(X_{t-1}-\mu\right)\right] + \phi_{2} \left[X_{t-k}(X_{t-2} - \mu)\right]}\\ & = {\phi_1 \gamma_{k-1} + \phi_2 \gamma_{k-2}}
+\end{array}
+\end{equation*}
+so that
+\begin{equation*}
+\rho_{k}=\phi_{1} \rho_{k-1}+\phi_{2} \rho_{k-2}, \quad k \geq 2
+\end{equation*}
+
+\noindent \textbf{Forecast}: Similar to AR(1) model.
+
+\subsection{Moving Average (MA) model}
+\subsubsection{MA(1) model}
+The form of MA(1) model is:
+\begin{equation}\label{MA1}
+X_t = \mu + Z_t + \theta_1 Z_{t-1}
+\end{equation}
+
+\noindent \textbf{Expectation}: 
+\begin{equation*}
+E(X_t) = \mu
+\end{equation*}
+
+\noindent \textbf{Variance}:
+\begin{equation*}
+\operatorname{Var}\left(r_{t}\right)=\left(1+\theta_1^{2}\right) \sigma^{2}
+\end{equation*}
+
+\noindent \textbf{Covariance}:
+\begin{equation*}
+\gamma_1 = Cov(X_t, X_{t-1}) =  E\left[\left(X_{t}-\mu\right)\left(X_{t-1}-\mu\right)\right] = E\left[\left(Z_{t}+\theta_{1} Z_{t-1}\right)\left(Z_{t-1}+\theta_{1} Z_{t-2}\right)\right]=\theta_{1} E(Z_{t-1}^{2})=\sigma^{2} \theta_{1}
+\end{equation*}
+
+\noindent As for $\forall k > 1$, 
+\begin{equation*}
+\gamma_{k}=E\left[\left(Z_{t}+\theta_{1} Z_{t-1}\right)\left(Z_{t-k}+\theta_{1} Z_{t-k-1}\right)\right]=0
+\end{equation*}
+
+\noindent so that
+\begin{equation*}
+\gamma_{k}=\left\{\begin{array}{ll}{\sigma^{2}\left(1+\theta_{1}^{2}\right),} & {k=0} \\ {\sigma^{2} \theta_{1},} & {k=1} \\ {0,} & {k>1}\end{array}\right.
+\end{equation*}
+
+\noindent so the ACF of MA(1) model is
+\begin{equation*}
+\rho_{k}=\left\{\begin{array}{ll}{1,} & {k=0} \\ {\frac{\theta_{1}}{1+\theta_{1}^{2}},} & {k=1} \\ {0,} & {k>1}\end{array}\right.
+\end{equation*}
+
+\noindent \textbf{Forecast}:
+\begin{itemize}
+	\item 1-step ahead: (at origin $t=n$)
+	\begin{equation*}
+	\hat{X}_{n}(1) = E\left(X_{n+1} | X_{1}, \ldots, X_{n}\right) = \mu + \theta_{1} Z_{n}
+	\end{equation*}
+	
+	1-step ahead forecast error:
+	\begin{equation*}
+	e_n(1) = Z_{n+1} 
+	\end{equation*}
+	with variance $\sigma^2$.
+	
+	\item multi-step ahead:
+	\begin{equation*}
+	\hat{X}_{n}(k) = \mu
+	\end{equation*}
+	for $k > 1$.
+\end{itemize}
+
+\noindent \textbf{Invertibility}:
+\begin{itemize}
+	\item Concept: $X_t$ is a proper linear combination of $Z_t$ and the past observations $\left\{X_{t-1}, X_{t-2}, \cdots\right\}$.
+	
+	\item For an invertible model, the dependence of $X_t$ on $X_{t-k}$ converges to zero as $k$ increases.
+	
+	\item Condition: $|\theta| < 1$
+	
+	\item Invertibility of MA models is the dual property of stationarity for AR models.
+\end{itemize}
+
+\subsubsection{MA(2) model}
+The form of MA(2) can be written as:
+\begin{equation*}
+X_t = \mu + Z_t + \theta_1 Z_{t-1} + \theta_2 Z_{t-2}
+\end{equation*}
+or
+\begin{equation*}
+X_t - \mu = (1 + \theta_1 B + \theta_2 B^2) Z_t
+\end{equation*}
+
+\noindent \textbf{Invertibility}: all the roots of $\theta(z)=1+\theta_{1} z+\theta_{2} z^{2}=0$ lie outside the unit circle.
+
+\subsection{ARMA(p,q)}
+The ARMA(p,q) model can be represented as:
+\begin{equation}\label{ARMA1}
+X_{t}=\phi_{0}+\phi_{1} X_{t-1}+\cdots+\phi_{p} X_{t-p}+Z_{t}+\theta_{1} Z_{t-1}+\cdots+\theta_{q} Z_{t-q}
+\end{equation}
+where $Z_t \sim N(0, \sigma^2)$.
+
+\section{Seasonal time series}
+\subsection{Multiplicative model}
+The form can be represented as:
+\begin{equation*}
+X_{t}-X_{t-1}-X_{t-4}+X_{t-5}=Z_{t}-\theta_{1} Z_{t-1}-\theta_{4} Z_{t-4}+\theta_{1} \theta_{4} Z_{t-5}
+\end{equation*}
+or
+\begin{equation*}
+(1-B)\left(1-B^{4}\right) X_{t}=\left(1-\theta_{1} B\right)\left(1-\theta_{4}B^4\right) Z_{t}
+\end{equation*}
+
+\noindent Supposed that
+\begin{equation*}
+Y_{t}=(1-\theta_1 B)\left(1-\theta_4 B^{4}\right) Z_{t}=Z_{t}-\theta_1 Z_{t-1}-\theta_4 Z_{t-4} + \theta_1 \theta_4 Z_{t-4-1}
+\end{equation*}
+
+\noindent then
+\begin{itemize}
+	\item $E (Y_t) = 0$
+	\item $\gamma_{0}=\operatorname{Var}\left(Y_{t}\right)=\left(1+\theta_1^{2}\right)\left(1+\theta_4^{2}\right) \sigma^{2}$
+	\item $\gamma_{1}=-\theta_1\left(1+\theta_4^{2}\right) \sigma^{2}$
+	\item $\gamma_{3}=\theta_1 \theta_4 \sigma^{2}$
+	\item $\gamma_{4}=-\theta_4\left(1+\theta_1^{2}\right) \sigma^{2}$
+	\item $\gamma_{5}=\theta_1 \theta_4 \sigma^{2}$
+	\item $\gamma_{k}=0, k \neq 0, 1, 3, 4, 5$
+\end{itemize}
+
+\noindent so the ACF of $\{Y_t\}$ is
+\begin{itemize}
+	\item $\rho_{1}=\frac{-\theta_1}{1+\theta_1^{2}}$
+	\item $\rho_{4}=\frac{-\theta_4}{1+\theta_4^{2}}$
+	\item $\rho_{3}=\rho_{5}=\rho_{1} \rho_{4}=\frac{\theta_1 \theta_4}{\left(1+\theta_1^{2}\right)\left(1+\theta_4^{2}\right)}$
+	\item $\rho_k = 0$, for other $k$
+\end{itemize}
+
+\noindent As for 
+\begin{equation*}
+(1-B)\left(1-B^{s}\right) X_{t}=(1-\theta B)\left(1-\Theta B^{s}\right) Z_{t}
+\end{equation*}
+we can get covariance as
+\begin{itemize}
+	\item $E (Y_t) = 0$
+	\item $\gamma_{0}=\operatorname{Var}\left(Y_{t}\right)=\left(1+\theta^{2}\right)\left(1+\Theta^{2}\right) \sigma^{2}$
+	\item $\gamma_{1}=-\theta\left(1+\Theta^{2}\right) \sigma^{2}$
+	\item $\gamma_{s-1}=\theta \Theta \sigma^{2}$
+	\item $\gamma_{s}=-\Theta\left(1+\theta^{2}\right) \sigma^{2}$
+	\item $\gamma_{s+1}=\theta \Theta \sigma^{2}$
+	\item $\gamma_{k}=0, k \neq 0, 1, s-1, s, s+1$
+\end{itemize}
+
+\noindent so the ACF of $\{Y_t\}$ becomes
+\begin{itemize}
+	\item $\rho_{1}=\frac{-\theta}{1+\theta^{2}}$
+	\item $\rho_{s}=\frac{-\Theta}{1+\Theta^{2}}$
+	\item $\rho_{s-1}=\rho_{s+1}=\rho_{1} \rho_{s}=\frac{\theta \Theta}{\left(1+\theta^{2}\right)\left(1+\Theta^{2}\right)}$
+	\item $\rho_k = 0$, for other $k$
+\end{itemize}
+
+\section{GARCH models - Condtional heteroscedastic models}
+\subsection{ARCH effect}
+Let $\xi_{t}=Z_{t}^{2}-E Z_{t}^{2}$. If there is not ARCH effect, then the ACF of $\xi_t$ are
+all zero.
+
+\noindent In 1983, McLeod and Li use Ljung-Box to test the null $H_0$: the ACF $\rho_k$ of $\xi_t$ are all zero, i.e,
+\begin{equation*}
+H_0: \rho_{1}=\cdots=\rho_{m}=0
+\end{equation*}
+Let $\hat{\rho}_{k}$ be the sample ACF of $\{\xi_t\}$. We use the Ljung-Box:
+\begin{equation*}
+Q(m)=n(n-1) \sum_{k=1}^{m} \frac{\hat{\rho}_{k}^{2}}{n-k} \sim \chi^{2}(m)
+\end{equation*}
+If test statistics is significant, then reject $H_0$ and there exists ARCH effect; otherwise, we can not reject the null hypothesis, which means there do not exist ARCH effect.\\
+
+\noindent In 1982, Engle use (Lagrange multiplier) LM test to test ARCH effect:
+Assumed that
+\begin{equation*}
+\xi_{t}=\alpha_{1} \xi_{t-1}+\cdots+\alpha_{m} \xi_{t-m}+e_{t}=\beta^{\prime} U_{t}+e_{t}
+\end{equation*}
+where $\beta=\left(\alpha_{1}, \cdots, \alpha_{m}\right)^{\prime}$ and $X_{t}=\left(\xi_{t-1}, \cdots, \xi_{t-m}\right)$ and use LM test for the null:
+\begin{equation*}
+H_{0} : \alpha_{1}=\cdots=\alpha_{m}=0
+\end{equation*}
+The LM test statistics:
+\begin{equation*}
+L M=\left(\sum_{t=1}^{n} X_{t}^{\prime}\right)\left[\sum_{t=1}^{n} X_{t} X_{t}^{\prime}\right]^{-1}\left(\sum_{t=1}^{n} X_{t}\right) \sim \chi^{2}(m)
+\end{equation*}
+
+\subsection{ARCH model}
+\begin{equation*}
+Z_{t}=\sigma_{t} \epsilon_{t}, \quad \sigma_{t}^{2}=\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\cdots+\alpha_{m} Z_{t-m}^{2}
+\end{equation*}
+where $\{\epsilon_{t}\}$ is a sequence of iid r.v. with mean 0 and variance 1, also $\alpha_0 > 0$ and $\alpha_i \geq 0$ for $i > 0$.
+
+\subsection{GARCH model}
+\begin{equation*}
+Z_{t} =\sigma_{t} \epsilon_{t}, \quad \sigma_{t}^{2} =\alpha_{0}+\sum_{i=1}^{m} \alpha_{i} Z_{t-i}^{2}+\sum_{i=1}^{s} \beta_{i} \sigma_{t-i}^{2}
+\end{equation*}
+where $\{\epsilon_{t}\}$ is defined above, also $\alpha_0 > 0$, $\alpha_i \geq 0$ and $\beta_j \geq 0$. \\
+
+\noindent Focus on a GARCH(1,1) model:
+\begin{equation*}
+Z_{t} =\sigma_{t} \epsilon_{t}, \quad \sigma_{t}^{2}=\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1} \sigma_{t-1}^{2}
+\end{equation*}
+
+\noindent In order to calculate expectation $E(Z_t)$, then firstly calculate conditional expectaion:
+\begin{equation*}
+\begin{aligned} E\left(Z_{t} | F_{t-1}\right)=E\left(\sigma_{t} \epsilon_{t} | F_{t-1}\right)&=E\left(\sqrt{\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1}\sigma_{t-1}^{2}} \cdot \epsilon_{t} | F_{t-1}\right)\\ &=\sqrt{\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1}\sigma_{t-1}^{2}} \cdot E\left(\epsilon_{t} | F_{t-1}\right)\\ &= \sigma_{t} E\left(\epsilon_{t} | F_{t-1}\right)=0
+\end{aligned}
+\end{equation*}
+so that
+\begin{equation*}
+E (Z_{t})=E\left[E\left(Z_{t} | F_{t-1}\right)\right]=0
+\end{equation*}
+
+\noindent Next, we try to calculate the variance of $Z_t$. Supposed that sequence $\{Z_t\}$ exists strictly stationary solution, then
+\begin{equation*}
+\begin{aligned} \operatorname{Var}\left(Z_{t}\right) &=E\left(Z_{t}^{2}\right) \\ &=E\left[E\left(Z_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[E\left(\sigma_{t}^{2} \epsilon_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[\sigma_{t}^{2} E\left(\epsilon_{t}^{2} | F_{t-1}\right)\right] \\ &=E\left[\sigma_{t}^{2} E\left(\epsilon_{t}^{2}\right)\right] \\ &=E\left[\sigma_{t}^{2}\right] \\ &=E\left[\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1} \sigma_{t-1}^{2}\right] \\ &= \alpha_{0}+\alpha_{1} E\left(Z_{t-1}^{2}\right)+\beta_{1} E\left(\sigma_{t-1}^{2}\right)\\ &=\alpha_{0}+\alpha_{1} E\left(Z_{t-1}^{2}\right)+\beta_{1} E\left[E\left(Z_{t-1}^{2} | F_{t-2}\right)\right] \\ &=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) E\left(Z_{t-1}^{2}\right) \end{aligned}
+\end{equation*}
+Let $E (Z_{t}^{2}) = E (Z_{t-1}^{2})$, then we get
+\begin{equation*}
+\operatorname{Var}\left(Z_{t}\right)=E (Z_{t}^{2})=\frac{\alpha_{0}}{1-\alpha_{1}-\beta_{1}}
+\end{equation*}
+
+\subsubsection{Forecast}
+Since
+\begin{equation*}
+\sigma_{t+1}^{2}=\alpha_{0}+\alpha_{1} Z_{t}^{2}+\beta_{1} \sigma_{t}^{2} \in F_{t}
+\end{equation*}
+then 1-step ahead forescast:
+\begin{equation*}
+\sigma_{t}^{2}(1)=E\left(\sigma_{t+1}^{2} | F_{t}\right)=\sigma_{t+1}^{2}=\alpha_{0}+\alpha_{1} Z_{t}^{2}+\beta_{1} \sigma_{t}^{2}
+\end{equation*}
+
+\noindent As for 2-step ahead forecast, since
+\begin{equation*}
+Z_{t}^{2}=\sigma_{t}^{2} \epsilon_{t}^{2}
+\end{equation*}
+and
+\begin{equation*}
+\begin{aligned} \sigma_{t+2}^{2} &=\alpha_{0}+\alpha_{1} Z_{t+1}^{2}+\beta_{1} \sigma_{t+1}^{2} \\ &=\alpha_{0}+\alpha_{1} \sigma_{t+1}^{2} \epsilon_{t+1}^{2}+\beta_{1} \sigma_{t+1}^{2} \\ &=\alpha_{0}+\left(\alpha_{1} \epsilon_{t+1}^{2}+\beta_{1}\right) \sigma_{t+1}^{2} \end{aligned}
+\end{equation*}
+then
+\begin{equation*}
+\sigma_{t}^{2}(2)=E\left(\sigma_{t+2}^{2} | F_{t}\right)=\alpha_{0}+E\left(\alpha_{1} \epsilon_{t+1}^{2}+\beta_{1} | F_{t}\right) \sigma_{t+1}^{2}=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(1)
+\end{equation*}
+In general, since
+\begin{equation*}
+\sigma_{t+\ell}^{2}=\alpha_{0}+\alpha_{1} \varepsilon_{t+\ell-1}^{2} \sigma_{t+\ell-1}^{2}+\beta_{1} \sigma_{t+\ell-1}^{2}=\alpha_{0}+\left(\alpha_{1} \varepsilon_{t+\ell-1}^{2}+\beta_{1}\right) \sigma_{t+\ell-1}^{2}
+\end{equation*}
+we have
+\begin{equation*}
+\begin{aligned} \sigma_{t}^{2}(\ell) &=E\left\{\sigma_{t+\ell}^{2} | F_{t}\right\}=\alpha_{0}+E\left\{\left(\alpha_{1} \epsilon_{t+\ell-1}^{2}+\beta_{1}\right) \sigma_{t+\ell-1}^{2} | F_{t}\right\} \\ &=\alpha_{0}+E\left\{E\left[\left(\alpha_{1} \epsilon_{t+\ell-1}^{2}+\beta_{1}\right) \sigma_{t+\ell-1}^{2} | F_{t+\ell-2}\right] | F_{t}\right\}\\
+&=\alpha_{0}+E\left\{\sigma_{t+\ell-1}^{2} E\left[\alpha_{1} \varepsilon_{t+\ell-\ell-1}^{2}+\beta_{1} | F_{t+\ell-2}\right] | F_{t}\right\} \\
+&=\alpha_{0}+\left\{\sigma_{t+\ell-1}^{2}\left(\alpha_{1}+\beta_{1}\right) | F_{t}\right\} \\ &=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(\ell-1)
+\end{aligned}
+\end{equation*}
+
+\subsection{IGARCH model}
+An IGARCH model is as follows:
+\begin{equation*}
+Z_{t}=\sigma_{t} \epsilon_{t}, \sigma_{t}^{2}=\alpha_{0}+\beta_{1} \sigma_{t-1}^{2}+\left(1-\beta_{1}\right) Z_{t-1}^{2}
+\end{equation*}
+In this case,
+\begin{equation*}
+\sigma_{t}^{2}(\ell)=\sigma_{t}^{2}(1)+(\ell-1) \alpha_{0}
+\end{equation*}
+where $h$ is the forecast origin. The effect of $\sigma_{t}^{2}(\ell)$ on future is persistent, and the volatility forecasts form a straight line with slope $\alpha_{0}$.
+
+\subsection{GARCH-M model}
+\begin{equation*}
+\begin{array}{c}{r_{t}=\mu+c \sigma_{t}^{2}+Z_{t}} \\ {Z_{t}=\sigma_{t} \epsilon_{t}, \sigma_{t}^{2}=\alpha_{0}+\alpha_{1} Z_{t-1}^{2}+\beta_{1} \sigma_{t-1}^{2}}\end{array}
+\end{equation*}
+where $c$ is referred to as \textbf{risk premium}, which is expected to be positive.
+
+\subsection{EGARCH model}
+Asymmetry in responses to + and - returns:
+\begin{equation*}
+g\left(\epsilon_{t}\right)=\theta \epsilon_{t}+\left[\left|\epsilon_{t}\right|-E\left(\left|\epsilon_{t}\right|\right)\right]
+\end{equation*}
+with $E\left[g\left(\epsilon_{t}\right)\right]=0$. To see asymmetry of $g\left(\epsilon_{t}\right)$, rewrite it as
+\begin{equation*}
+g\left(\epsilon_{t}\right)=\left\{\begin{array}{l}{(\theta+1) \epsilon_{t}-E\left(\left|\epsilon_{t}\right|\right) \text { if } \epsilon_{t} \geq 0} \\ {(\theta-1) \epsilon_{t}-E\left(\left|\epsilon_{t}\right|\right) \text { if } \epsilon_{t}<0}\end{array}\right.
+\end{equation*}
+
+\noindent An EGARCH(m,s) model is formulated as:
+\begin{equation*}
+Z_{t}=\sigma_{t} \epsilon_{t}, \ln \left(\sigma_{t}^{2}\right)=\alpha_{0}+\sum_{i=1}^{m} \alpha_{i} g\left(\epsilon_{t-i}\right)+\sum_{i=1}^{s} \beta_{i} \ln \left(\sigma_{t-i}^{2}\right)
+\end{equation*}
+
+\noindent Consider an EGARCH(1,1) model
+\begin{equation*}
+Z_{t}=\sigma_{t} \epsilon_{t}, \quad(1-\beta B) \ln \left(\sigma_{t}^{2}\right)=\alpha_{0}+\alpha g\left(\epsilon_{t-1}\right)
+\end{equation*}
+Under normality, $E\left(\left|\epsilon_{t}\right|\right)=\sqrt{2 / \pi}$ and the model becomes
+\begin{equation*}
+(1-\beta B) \ln \left(\sigma_{t}^{2}\right)=\left\{\begin{array}{l}{\alpha_{*}+\alpha(\theta+1) \epsilon_{t-1} \text { if } \epsilon_{t-1} \geq 0} \\ {\alpha_{*}+\alpha(\theta-1) \epsilon_{t-1} \text { if } \epsilon_{t-1}<0}\end{array}\right.
+\end{equation*}
+where $\alpha_{*}=\alpha_{0}-\alpha \sqrt{2 / \pi}$.
+
+\subsection{TGARCH model}
+The Threshold GARCH (TGARCH) or GJR Model A TGARCH(s,m) or GJR(s,m) model is defined as
+\begin{equation*}
+\begin{array}{c}{r_{t}=\mu_{t}+Z_{t}, \quad Z_{t}=\sigma_{t} \epsilon_{t}} \\ {\sigma_{t}^{2}=\alpha_{0}+\sum_{i=1}^{s}\left(\alpha_{i}+\gamma_{i} N_{t-i}\right) Z_{t-i}^{2}+\sum_{j=1}^{m} \beta_{j} \sigma_{t-j}^{2}}\end{array}
+\end{equation*}
+where $N_{t-i}$ is an indicator variable such that
+\begin{equation*}
+N_{t-i}=1 \text { if } Z_{t-i}<0, \text { and } = 0 \text{ otherwise }
+\end{equation*}
+
+\section{Multivariate time series models}
+The real data $Z_t$ is a vector:
+\begin{equation*}
+Z_{t}=\left[ \begin{array}{c}{Z_{1 t}} \\ {Z_{2 t}} \\ {\vdots} \\ {Z_{m t}}\end{array}\right]
+\end{equation*}
+$Z_t$ is called an $m$-dimensional vector time series.
+
+\begin{itemize}
+	\item Mean
+	\begin{equation*}
+	E Z_{t}=\left[ \begin{array}{c}{E Z_{1 t}} \\ {E Z_{2 t}} \\ {\vdots} \\ {E Z_{m t}}\end{array}\right]=\left[ \begin{array}{c}{\mu_{1 t}} \\ {\mu_{2 t}} \\ {\vdots} \\ {\mu_{m t}}\end{array}\right] \equiv \mu
+	\end{equation*}
+	\item Covariance
+	\begin{equation*}
+	\begin{aligned}
+	\Gamma(k)&=\operatorname{Cov}\left(Z_{t}, Z_{t+k}\right)=E\left[\left(Z_{t}-\mu\right)\left(Z_{t+k}-\mu\right)^{\prime}\right]\\
+	&=\left[ \begin{array}{cccc}{\gamma_{11}(k)} & {\gamma_{12}(k)} & {\cdots} & {\gamma_{1 m}(k)} \\ {\gamma_{21}(k)} & {\gamma_{22}(k)} & {\cdots} & {\gamma_{2 m}(k)} \\ {\vdots} & {\vdots} & {\vdots} & {\vdots} \\ {\gamma_{m 1}(k)} & {\gamma_{m 2}(k)} & {\cdots} & {\gamma_{m m}(k)}\end{array}\right]
+	\end{aligned}
+	\end{equation*}
+	\item Corralation matrix
+	\begin{equation*}
+	\rho_{0}=\left(\rho_{i j}(0)\right)_{k \times k}=D^{-1} \Gamma_{0} D^{-1}
+	\end{equation*}
+	where $D=\operatorname{diag}\left(\sqrt{\Gamma_{11}(0)}, \ldots, \sqrt{\Gamma_{k k}(0) )}\right.$
+\end{itemize}
+
+\noindent As for $k$-dimension time series,
+\begin{equation*}
+\begin{aligned} \Gamma_{i j}(l) &=\operatorname{Cov}\left(r_{i t}, r_{j, t-l}\right)=\operatorname{Cov}\left(r_{j, t-l}, r_{i, t}\right)=\operatorname{Cov}\left(r_{j, t}, r_{i, t+l}\right) \\ &=\operatorname{Cov}\left(r_{j, t}, r_{i, t-(-l)}\right)=\Gamma_{j i}(-l) \end{aligned}
+\end{equation*}
+so that
+\begin{equation*}
+\Gamma_{-l}=\Gamma_{l}^{T}
+\end{equation*}
+and also we can get
+\begin{equation*}
+\rho_{-l}=\rho_{l}^{T}
+\end{equation*}
+
+\subsection{The vector AR(1) model}
+\begin{itemize}
+	\item Model
+	\begin{equation*}
+	\left(I-\Phi_{1} B\right) \dot{X}_{t}=Z_{t} \text{,\quad or} \dot{X}_{t}=\Phi_{1} \dot{X}_{t-1}+Z_{t}
+	\end{equation*}
+	when $m = 2$,
+	\begin{equation*}
+	\left[ \begin{array}{c}{\dot{X}_{1 t}} \\ {\dot{X}_{2 t}}\end{array}\right]=\left[ \begin{array}{cc}{\phi_{11}} & {\phi_{12}} \\ {\phi_{21}} & {\phi_{22}}\end{array}\right] \left[ \begin{array}{c}{\dot{X}_{1, t-1}} \\ {\dot{X}_{2, t-1}}\end{array}\right]+\left[ \begin{array}{c}{Z_{1 t}} \\ {Z_{2 t}}\end{array}\right]
+	\end{equation*}
+	
+	\item Stationarity conditions\\
+	
+	\noindent All the roots of the determinant $\left|I-\Phi_{1} z\right|=0$ lie outside the unit cricle.\\
+	
+	\noindent In this case,
+	\begin{equation*}
+	\left(I-\Phi_{1} B\right)^{-1}=I+\Phi_{1} B+\Phi_{1}^{2} B^{2}+\cdots
+	\end{equation*}
+	and
+	\begin{equation*}
+	\dot{X}_{t}=Z_{t}+\Phi_{1} Z_{t-1}+\Phi_{1}^{2} Z_{t-2}+\cdots
+	\end{equation*}
+	
+	\item Covariance matrix function
+	\begin{equation*}
+	\Gamma(k)=\left\{\begin{array}{ll}{\Gamma(-1) \Phi_{1}^{\prime}+\Sigma,} & {\text { if } k=0} \\ {\Gamma(k-1) \Phi_{1}^{\prime}=\Gamma(0)\left(\Phi_{1}^{\prime}\right)^{k},} & {\text { if } k \geq 1}\end{array}\right.
+	\end{equation*}
+	In general, $\Gamma(0) \neq I$
+	\begin{equation*}
+	\Phi_{1}=\Gamma^{\prime}(1) \Gamma^{-1}(0) \quad \text { and } \Sigma=\Gamma(0)-\Gamma^{\prime}(1) \Phi_{1}^{\prime}
+	\end{equation*}
+	Thus,
+	\begin{equation*}
+	\Sigma=\Gamma(0)-\Phi_{1} \Gamma(0) \Phi_{1}^{\prime}
+	\end{equation*}
+	We can find $\Gamma(0)$ by solving the above equation.
+\end{itemize}
+
+\subsection{The vector MA(1)model}
+\begin{itemize}
+	\item Model
+	\begin{equation*}
+	\dot{Z}_{t}=\left(I-\Theta_{1} B\right) a_{t}, \quad \text { or } \dot{Z}_{t}=a_{t}-\Theta_{1} a_{t-1}
+	\end{equation*}
+	when $m = 2$,
+	\begin{equation*}
+	\left[ \begin{array}{c}{\dot{Z}_{1 t}} \\ {\dot{Z}_{2 t}}\end{array}\right]=\left[ \begin{array}{c}{a_{1 t}} \\ {a_{2 t}}\end{array}\right]-\left[ \begin{array}{cc}{\Theta_{11}} & {\Theta_{12}} \\ {\Theta_{21}} & {\Theta_{22}}\end{array}\right] \left[ \begin{array}{c}{a_{1, t-1}} \\ {a_{2, t-1}}\end{array}\right]
+	\end{equation*}
+	
+	\item Invertibility conditions\\
+	
+	\noindent All the roots of the determinant $\left|I-\Theta_{1} z\right|=0$ lie outside the unit circle.\\
+	
+	\noindent In this case,
+	\begin{equation*}
+	\left(I-\Theta_{1} B\right)^{-1}=I+\Theta_{1} B+\Theta_{1}^{2} B^{2}+\cdots
+	\end{equation*}
+	and
+	\begin{equation*}
+	Z_{t}=\dot{X}+\Theta_{1} \dot{X}_{t-1}+\Theta_{1}^{2} \dot{X}_{t-2}+\cdots
+	\end{equation*}
+	
+	\item Covariance matrix function
+	\begin{equation*}
+	\Gamma(0)=\Sigma+\Theta_{1} \Sigma \Theta_{1}^{\prime};
+	\end{equation*}
+	\begin{equation*}
+	\Gamma(k)=\left\{\begin{array}{ll}{-\Sigma \Theta_{1}^{\prime},} & {\text { if } k=1} \\ {-\Theta_{1} \Sigma,} & {\text { if } k=-1} \\ {0,} & {\text { if }|k|>1}\end{array}\right.
+	\end{equation*}
+\end{itemize}
+
+\section{Partially non-stationary vector time series}
+\subsection{Cointegration}
+\textbf{Definition} 1. (Engle and Granger 1987): For a series yt with no deterministic components, let
+\begin{equation*}
+(1-B)^{d} y_{t}=z_{t}
+\end{equation*}
+If $z_t$ is a stationary ARMA process, we said that $y_t \sim I(d)$.\\
+
+\noindent \textbf{Definition} 1. (Engle and Granger 1987): If all elements of the vector $\mathbf{y}_t$ are $I(d)$ and there exists a vector $\beta \neq 0$ such that
+\begin{equation*}
+\beta^{\prime} \mathbf{y}_{t} \sim I(d-b)
+\end{equation*}
+for some $b > 0$, the vector process is said to be cointegrated $CI(d,b)$ and $\beta$ is called cointegrating vector.\\
+
+\noindent \textbf{Example.} The bivariate system:
+\begin{equation*}
+\begin{array}{l}{y_{1 t}=\gamma y_{2 t}+\varepsilon_{1 t}} \\ {y_{2 t}=y_{2\{t-1\}}+\varepsilon_{2 t}}\end{array}
+\end{equation*}
+where $\gamma \neq 0$, $\varepsilon_{1 t}$ and $\varepsilon_{2 t}$ being uncorrelated white noise processes.\\
+
+\noindent $\triangle y_{2 t}=\varepsilon_{2 t}$, where $\triangle \equiv 1-B$.
+
+\begin{equation*}
+\triangle y_{1 t}=\gamma \triangle y_{2 t}+\triangle \varepsilon_{1 t}=\gamma \varepsilon_{2 t}+\varepsilon_{1 t}-\varepsilon_{1, t-1}
+\end{equation*}
+
+\noindent Thus, both $y_{1 t}$ and $y_{2 t}$ are $I(1)$ processes, but the linear combination $y_{1 t}-\gamma y_{2 t}$ is stationary.\\
+
+\noindent Hence $\mathbf{y}_{t}=\left(y_{1 t}, y_{2 t}\right)^{\prime}$ is cointegrated with a cointegrating vector $\beta = (1, -\gamma)^{\prime}$.\\
+
+\noindent In general, if the vector process $\mathbf{y}_{t}$ has $m$ components, then there can be
+more than one cointegrating vector $\beta^{\prime}$.
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
