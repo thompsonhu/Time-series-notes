@@ -1,0 +1,380 @@
+\documentclass{article}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{changepage,lipsum,titlesec}% http://ctan.org/pkg/{changepage,lipsum,titlesec}
+\usepackage{enumitem}
+\usepackage{underscore} % Allows literal underscores
+\usepackage{fixltx2e} % Allows \textsubscript{}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{color}
+\usepackage{pdfpages}
+\usepackage{tikz} % For diagrams
+\usepackage{hyperref}
+\usepackage{fancyhdr} % For headers and footers
+\usepackage{geometry}
+\usepackage{mathtools}
+
+ \geometry{
+ a4paper, % Change this if you intend to print on a different paper size, such as letter paper.
+ total={210mm,297mm},
+ left=20mm,
+ right=20mm,
+ top=30mm,
+ bottom=30mm,
+ }
+\pagestyle{fancy}
+
+%Settings
+\newcommand{\courseName}{MAFS5130} % Insert course name here
+\title{\courseName: Time series analysis}
+\author{Thompson Hu}
+\date{} % If you'd like to have a date, place it here
+
+% Headers and footers. See documentation for 'fancyhdr' package for more information.
+\lhead{\courseName} % Left header
+\chead{} % Center header
+\rhead{} % Right header
+\lfoot{} % Left footer
+\cfoot{\thepage} % Center footer
+\rfoot{} % Right footer
+
+% Lecture block settings.
+\lstset{
+  basicstyle= \normalfont,
+  mathescape=true, % Allows for adding equations.
+  escapechar={~}, % You may wish to change this symbol, if you use ~ in your notes a lot.
+  breaklines=true, % Automatic text wrapping.
+  columns=fullflexible
+}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand*\rmdefault{ppl} %Set font
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section{Exercises}
+\begin{enumerate}
+	\item Find the ACF and PACF and plot the ACF $\rho_k$ for $k = 0,1,2,3,4$ and $5$ for each of the following models:
+	(a) $r_{t}-0.5 r_{t-1}=a_{t};$\\
+	(b) $r_{t}+0.98 r_{t-1}=a_{t};$\\
+	(c) $r_{t}-1.3 r_{t-1}+0.4 r_{t-2}=a_{t}.$
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item ACF:
+		\begin{equation*}
+		E(r_t * r_{t-k})
+		\end{equation*}
+		\item PACF: 
+		\begin{equation*}
+		\phi_{kk} = \frac{
+			\left| \begin{array}{cccccc}{1} & {\rho_{1}} & {\rho_{2}} & {\cdots} & {\rho_{k-2}} & {\rho_{1}} \\ {\rho_{1}} & {1} & {\rho_{1}} & {\cdots} & {\rho_{k-3}} & {\rho_{2}} \\ { } & { } & {\cdots} & { } & { } \\ { } & { } & {\cdots} \\ { } & { } & {\cdots} \\ {\rho_{k-1}} & {\rho_{k-2}} & {\rho_{k-3}} & {\cdots} & {\rho_{1}} & {\rho_{k}}\end{array}\right|}{
+			\left| \begin{array}{cccccc}{1} & {\rho_{1}} & {\rho_{2}} & {\cdots} & {\rho_{k-2}} & {\rho_{k-1}} \\ {\rho_{1}} & {1} & {\rho_{1}} & {\cdots} & {\rho_{k-3}} & {\rho_{k-2}} \\ { } & { } & {\cdots} & { } & { } \\ { } & { } & {\cdots} \\ {\rho_{k-1}} & {\rho_{k-2}} & {\rho_{k-3}} & {\cdots} & {\rho_{1}} & {1}\end{array}\right|
+		}
+		\end{equation*}
+	\end{itemize}
+	
+	\item For each of the following models,\\
+	(a) $(1-0.9 B)\left(r_{t}-10\right)=a_{t};$\\
+	(b) $r_{t}=10-0.9 a_{t-1}+a_{t};$\\
+	(c) $(1-0.5 B)\left(r_{t}-10\right)=a_{t}-0.9 a_{t-1}.$\\
+	where $\sigma_a^2 = 2$. Given $r_1 = 1.2$ and $r_2 = 0.1$, find the $l$-step ahead forecast values and forecast variances for $l = 1,2,3,4$.
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item l-step ahead forecast:
+		\begin{equation*}
+		\hat{r_t}(l) = E(r_{t+l} | \mathcal{F}_t)
+		\end{equation*}
+		
+		\item l-step forecast variance:
+		\begin{equation*}
+		\begin{array}{c}
+		e_t(l) = r_{t+l} - \hat{r_t}(l)\\
+		\operatorname{Var}\left[e_t(l)\right] = \sigma_a^2 \left(1+\phi^2+\phi^4+\cdots\right)
+		\end{array}
+		\end{equation*}
+	\end{itemize}
+
+	\item Find the ACF and PACF for $k = 0, 1, 2, 3$ and $4$ for each of the following models:\\
+	(a) $r_{t}=(1-0.8 B) a_{t};$\\
+	(b) $r_{t}=\left(1-1.2 B+0.5 B^{2}\right) a_{t}.$
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item ACF
+		\item PACF
+	\end{itemize}
+	
+	\item Verify whether or not the following models are stationary and / or invertible:\\
+	(a) $(1-B) r_{t}=(1-1.5 B) a_{t};$\\
+	(b) $(1-0.8 B) r_{t}=(1-0.5 B) a_{t};$\\
+	(c) $\left(1-1.1 B+0.8 B^{2}\right) r_{t}=\left(1-1.7 B+0.72 B^{2}\right) a_{t}$\\
+	(d) $(1-0.6 B) r_{t} =\left(1-1.2 B+0.2 B^{2}\right) a_{t}$
+	
+	\textbf{Solution:}\\
+	For AR(1), MA(1), ARMA(1,1),
+	\begin{itemize}
+		\item Invertibility condition: $|\theta| < 1$
+		\item Stationarity condition: $|\phi| < 1$
+	\end{itemize}
+	For other model, solve equation like $1-1.1z+0.8z^2 = 0$ in (c), if the roots lies outside the unit circle, then it's stationary or invertible; otherwise it's not.
+	
+	\item Consider the two models:\\
+	(a) $(1-0.43 B)(1-B) r_{t}=a_{t};$\\
+	(b) $(1-B) r_{t}=(1-0.43 B) a_{t}$\\
+	where $a_t$ is i.i.d. $N(0, 1)$. Given the observations $r_{49} = 33.4$ and	$r_{50} = 33.9$, compute their forecasts $r_{50}(l)$, for $l = 1,2,3,4$, and the corresponding $90\%$ forecast intervals.
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item Forecast values: $\hat{r_{50}}(1) = E(r_{51} | \mathcal{F}_t) = 34.115$
+		\item Forecast variance: $\operatorname{Var}\left[e_{n}(l)\right]=\sigma_{a}^{2} \sum_{j=0}^{l-1} \phi^{2 j}$
+		\item Forecast intervals: $\left[\widehat{r}_{n}(l)-N_{\frac{\alpha}{2}} \sigma_{a} \sqrt{\sum_{j=0}^{l-1} \phi^{2 j}}, \widehat{r}_{n}(l)+N_{\frac{\alpha}{2}} \sigma_{a} \sqrt{\sum_{j=0}^{l-1} \phi^{2 j}}\right]$\\
+		where $\alpha = 0.1$ in this case and $N_{\frac{\alpha}{2}}$ is the $\frac{\alpha}{2}$ -quantile of the standard normal distribution.
+	\end{itemize}
+
+	\item Find the ACF for the following seasonal models:\\
+	(a) $r_{t}=\left(1-\theta_{1} B\right)\left(1-\Theta_{1} B\right) a_{t};$\\
+	(b) $\left(1-\Phi_{1} B^{s}\right) r_{t}=\left(1-\theta_{1} B\right) a_{t};$\\
+	(c) $\left(1-\Phi_{1} B^{s}\right)\left(1-\phi_{1} B\right) r_{t}=a_{t}$\\
+	where $a_t$ is i.i.d. $N(0, 1)$.
+	
+	\textbf{Solution:}
+	
+	\item Consider the ARCH model:\\
+	\begin{equation*}
+	a_{t}=\eta_{t} \sigma_{t}, \sigma_{t}^{2}=\alpha_{0}+\alpha_{1} a_{t-1}^{2}
+	\end{equation*}
+	Show that the unconditional variance of $a_t$ is $\operatorname{Var}\left(a_{t}\right)=\alpha_{0} /\left(1-\alpha_{1}\right)$,\\ where $\alpha_{0}>0,0 \leq \alpha_{1}<1$ and $\eta_t$ is i.i.d. $N(0, 1)$.
+	
+	\textbf{Solution:} Use conditional expectation to solve the problem.
+	
+	\item Give the stationarity condition and its representation in terms of $\{\eta_t\}$ for the GARCH model:
+	\begin{equation*}
+	a_{t}=\eta_{t} \sigma_{t}, \sigma_{t}^{2}=\alpha_{0}+\alpha_{1} a_{t-1}^{2}+\beta_{1} \sigma_{t-1}^{2}
+	\end{equation*}
+	where $\alpha_{0}>0, \alpha_{1}, \beta_{1} \geq 0$, and $\eta_t$ is i.i.d. $N(0, 1)$. Futhermore, give $Ea_t^4$ and the prediction of the conditional variances $\sigma_{t+s}^2$
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item Stationarity condition: $0 \leq \alpha_{1}, \beta_{1} \leq 1,\left(\alpha_{1}+\beta_{1}\right)<1$; [$\sum_{i=1}^{\max (m, s)}\left(\alpha_{i}+\beta_{i}\right)<1$ for GARCH(m,s)]
+		\item Representation in terms of $\{\eta_t\}$: $\sigma_{t}^{2}=\alpha_{0}\left[1+\sum_{j=1}^{\infty} \prod_{i=1}^{j}\left(\alpha_{1} \eta_{t-i}^{2}+\beta_{1}\right)\right]$
+		\item 1-step ahead forecast: $\sigma_{t}^{2}(1)=E\left(\sigma_{t+1}^{2} | \mathcal{F}_{t}\right)=\sigma_{t+1}^{2}=\alpha_{0}+\alpha_{1} Z_{t}^{2}+\beta_{1} \sigma_{t}^{2}$
+		\item 2-step ahead forecast: $\sigma_{t}^{2}(2)=E\left(\sigma_{t+2}^{2} | \mathcal{F}_{t}\right)=\alpha_{0}+E\left(\alpha_{1} \epsilon_{t+1}^{2}+\beta_{1} | \mathcal{F}_{t}\right) \sigma_{t+1}^{2}=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(1)$
+		\item In general: $\sigma_{t}^{2}(\ell)=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(\ell-1)$
+		\item 
+	\end{itemize}
+
+	\item Give the stationarity and invertibility conditions, MA and AR representation and ACFs of the seasonal ARMA models:\\
+	(a) $y_{t}=\phi y_{t-s}+a_{t};$\\
+	(b) $y_{t}=\theta a_{t-s}+a_{t}$\\
+	where $\{a_t\}$ is white noise and variance $\sigma_a^2$.
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item MA representation: $y_{t}=\frac{1}{1-\phi B^{s}} a_{t}=\sum_{j=0}^{\infty}\left(\phi B^{s}\right)^{j} a_{t}$
+		\item AR representation: $a t=\frac{y_{t}}{1+\theta B^{s}}=\sum_{j=0}^{\infty}\left(-\theta B^{s}\right)^{j} y_{t}$
+		\item ACFs
+	\end{itemize}
+	
+	\item Consider the following EGARCH(1,1) model
+	\begin{equation*}
+	a_{t}=\sigma_{t} \epsilon_{t}, \quad(1-\beta B) \ln \left(\sigma_{t}^{2}\right)=\alpha_{0}+\alpha g\left(\epsilon_{t-1}\right)
+	\end{equation*}
+	where $\epsilon_{t} \sim N(0,1)$ and $E\left(\left|\epsilon_{t}\right|\right)=\sqrt{2 / \pi}$ and
+	\begin{equation*}
+	g\left(\epsilon_{t}\right)=\theta \epsilon_{t}+\left[\left|\epsilon_{t}\right|-E\left(\left|\epsilon_{t}\right|\right)\right]
+	\end{equation*}
+	Show the representation of $\ln(\sigma_t^2)$ in terms of $\epsilon_t$ and give its mean and variance.
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item Expectation:
+		\begin{equation*}
+		\begin{array}{lllll}
+		E(\ln(\sigma_t^2)) &= E\left[\frac{1}{1-\beta B}(\alpha_0 + \alpha g(\epsilon_{t-1}))\right]\\ &= E\left[\frac{\alpha_0}{1-\beta} + \alpha \sum_{i=0}^{\infty} \beta^i B^i g(\epsilon_{t-1})\right]\\ &= E\left[\frac{\alpha_0}{1-\beta} + \alpha \sum_{i=0}^{\infty} \beta^i g(\epsilon_{t-i-1})\right]\\ &= 
+		\frac{\alpha_0}{1-\beta} + \frac{\alpha}{1-\beta} E\left[g(\epsilon_{t-i-1})\right]\\ &=
+		\frac{\alpha_0}{1-\beta}
+		\end{array}
+		\end{equation*}
+		\item Variance:
+		\begin{equation*}
+		\operatorname{Var}(\ln(\sigma_t^2)) = \operatorname{Var}\left(\frac{1}{1-\beta B}[\alpha_0 + \alpha g(\epsilon_{t-1})]\right) = \operatorname{Var}\left(\frac{\alpha}{1-\beta B}g(\epsilon_{t-1})\right) = \operatorname{Var}\left(\frac{\alpha}{1-\beta}g(\epsilon_{t-i-1})\right)
+		\end{equation*}
+		Since
+		\begin{equation*}
+		\begin{array}{lllll}
+		\operatorname{Var}[g(\epsilon_{t-1})] &= E[g^2(\epsilon_{t-1})]\\ &= E\left[\left(\theta \epsilon_{t}+\left|\epsilon_{t}\right|-E\left(\left|\epsilon_{t}\right|\right)\right)^2\right]\\ &= E(\theta^2\epsilon_t^2) + E(|\epsilon_t|^2) + \frac{2}{\pi} + 2E\left(\theta\epsilon_t|\epsilon_t|\right) - 2E\left(|\epsilon_t|\sqrt{\frac{2}{\pi}}\right) - 2E\left(\theta\epsilon_t\sqrt{\frac{2}{\pi}}\right)\\ &= (\theta^2 + 1) + \frac{2}{\pi} - \frac{4}{\pi} = (\theta^2 + 1) - \frac{2}{\pi}
+		\end{array}
+		\end{equation*}
+		where
+		\begin{equation*}
+		E\left(\epsilon_t|\epsilon_t|\right) = 0
+		\end{equation*}
+		Then
+		\begin{equation*}
+		\operatorname{Var}(\ln(\sigma_t^2)) = \frac{\alpha^2 ((\theta^2 + 1) - \frac{2}{\pi})}{(1-\beta)^2} 
+		\end{equation*}
+	\end{itemize}
+	
+	
+	\item Consider the following bivariate VAR model:
+	\begin{equation*}
+	\begin{array}{l}{y_{1 t}=0.3 y_{1, t-1}+0.8 y_{2, t-1}+a_{1 t}} \\ {y_{2 t}=0.9 y_{1, t-1}+0.4 y_{2, t-1}+a_{2 t}}\end{array}
+	\end{equation*}
+	with $E\left(a_{1 t} a_{1 \tau}\right)=1$ if $t = \tau$ and $0$ otherwise, $E\left(a_{2 t} a_{2 \tau}\right)=2$ if $t = \tau$ and 0 otherwise, and $E\left(a_{1 t} a_{2 \tau}\right)=0$ for all $t$ and $\tau$.
+	
+	(a) Is this system stationary?\\
+	(b) Calculate the two-step ahead forecast variance for variable $y_{1,t+2}$, that is
+	\begin{equation*}
+	E\left[y_{1, t+2}-E\left(y_{1, t+2} | Y_{t}, Y_{t-1}, \cdots\right)\right]^{2}
+	\end{equation*}
+	where $Y_t = (y_{1t}, y_{2t})^{\prime}$
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item Stationarity or invertibility condition:
+		\begin{equation*}
+		\lambda \left| \begin{array}{cc} 1 & 0 \\ 0 & 1\end{array}\right| - \Phi_1
+		\end{equation*}
+		\item VAR(p) model:
+		\begin{itemize}
+			\item $\hat{y_{1,t}}(2) = E\left(y_{1, t+2} | Y_{t}, Y_{t-1}, \cdots\right)$
+			\item $\operatorname{Var}\left(e_{t}(1)\right)=\Sigma$
+			\item $\operatorname{Var}\left(e_{t}(l)\right)=\Sigma+\sum_{j=1}^{l-1} \Psi_{j} \Sigma \Psi_{j}^{T}$
+			\item $\Sigma = E\left[a_{t} a_{t+k}^{\prime}\right]$, if $k = 0$.
+		\end{itemize}
+	\end{itemize}
+
+	\item Write down the bivariate system into an VAR model and show that it is not stationary:
+	\begin{equation*}
+	\begin{array}{l}{y_{1 t}=\gamma y_{2 t}+\varepsilon_{1 t}} \\ {y_{2 t}=y_{2, t-1}+\varepsilon_{2 t}}\end{array}
+	\end{equation*}
+	where $\gamma \neq 0, \varepsilon_{1 t}$ and $\varepsilon_{2 t}$ being uncorrelated white noise processes.
+	
+	\textbf{Solution:}\\
+	Stationarity or invertibility condition:
+	\begin{equation*}
+	\lambda \left| \begin{array}{cc} 1 & 0 \\ 0 & 1\end{array}\right| - \Phi_1
+	\end{equation*}
+	
+	\item Show that the following VAR model
+	\begin{equation*}
+	\mathbf{y}_{\mathrm{t}}=\sum_{\mathrm{i}=1}^{\mathrm{p}} \Phi_{\mathrm{i}} \mathrm{y}_{\mathrm{t}-\mathrm{i}}+\varepsilon_{\mathrm{t}}
+	\end{equation*}
+	can be written as following VCE model:
+	\begin{equation*}
+	\Phi(B) \mathbf{y}_{\mathbf{t}}=\mathbf{\Phi}^{*}(\mathbf{B})(1-\mathbf{B}) \mathbf{y}_{\mathbf{t}}+\mathbf{\Phi}(1) \mathbf{B} \mathbf{y}_{\mathbf{t}}
+	\end{equation*}
+	where $\Phi^{*}(B)=\mathrm{I}_{\mathrm{m}}-\sum_{\mathrm{i}=1}^{\mathrm{p}-1} \Phi_{\mathrm{i}}^{*} \mathrm{B}^{\mathrm{i}}$ with $\Phi_{i}^{*}=-\sum_{j=i+1}^{p} \Phi_{j}$.
+	
+	\textbf{Solution:}\\
+	Assume $|\Phi(z)|=\left|I_{m}-\sum_{i=1}^{p} \Phi_{i} z^{i}\right|=0$ has $d < m$ unit root and the
+	remaining roots outside the unit circle.\\
+	The rank of $\Phi(1)=I_{m}-\sum_{i=1}^{p} \Phi_{i}$ is $r$ and $r = m -d$.\\
+	We can decompose $\Phi(1)$ as
+	\begin{equation*}
+	\alpha \beta^{\prime}=-\Phi(1)=-\mathbf{I}_{m}+\Phi_{1}+\ldots+\Phi_{p}
+	\end{equation*}
+	$\Phi(B)$ can be re-expressed as
+	\begin{equation*}
+	\Phi(B)=\Phi^{*}(B)(1-B)+\Phi(1) B
+	\end{equation*}
+	where $\Phi^{*}(B)=\mathbf{I}_{m}-\sum_{i=1}^{p-1} \Phi_{i}^{*} B^{i}$ with $\Phi_{i}^{*}=-\sum_{j=i+1}^{p} \Phi_{j}$.
+	
+	\item Consider the two dimensional vector AR(2) model:
+	\begin{equation*}
+	\left[ \begin{array}{c}{Z_{1 t}} \\ {Z_{2 t}}\end{array}\right]=\left[ \begin{array}{c}{a_{1 t}} \\ {a_{2 t}}\end{array}\right]+\left[ \begin{array}{cc}{-0.2} & {0.1} \\ {0.5} & {0.2}\end{array}\right] \left[ \begin{array}{c}{Z_{1, t-1}} \\ {Z_{2, t-1}}\end{array}\right]+\left[ \begin{array}{cc}{0.8} & {0.7} \\ {-0.4} & {0.6}\end{array}\right] \left[ \begin{array}{c}{Z_{1, t-2}} \\ {Z_{2, t-2}}\end{array}\right]
+	\end{equation*}
+	where $\left\{\left(a_{1 t}, a_{2 t}\right)^{\prime}\right\}$ i sa sequence of i.i.d. standard normal random vectors.
+	Show that it is a partially non-stationary AR model and give its cointegration vector.
+	
+	\textbf{Solution:}
+	\begin{equation*}
+	\left[ \begin{array}{ll}{1} & {0} \\ {0} & {1}\end{array}\right]-\left[ \begin{array}{cc}{-0.2} & {0.1} \\ {0.5} & {0.2}\end{array}\right]-\left[ \begin{array}{cc}{0.8} & {0.7} \\ {-0.4} & {0.6}\end{array}\right]=\left[ \begin{array}{cc}{0.4} & {-0.8} \\ {-0.1} & {0.2}\end{array}\right]=\left[ \begin{array}{c}{0.4} \\ {-0.1}\end{array}\right] \left[ \begin{array}{ll}{1} & {-2}\end{array}\right]
+	\end{equation*}
+	Since $|1+\alpha_1+\alpha_2\beta_1| = |1+0.4+0.2| > 1$, so it's not stationary.\\
+	And the cointegrating vector is $\beta=\left( \begin{array}{c}{1} \\ {-2}\end{array}\right)$.
+	
+	\item Determine the stationarity and invertibility of the following two dimensional vector models and find their correlation matrix function, $\rho_k$, for $k = \pm1, \pm2, \pm3$:\\
+	(a) $\left(I-\Phi_{1} B\right) Z_{t}=a_{t}$, where $\Phi_{1}=\left[ \begin{array}{cc}{0.8} & {0.3} \\ {0.1} & {0.6}\end{array}\right]$ and $\Sigma= I$;\\
+	(b) $\left(I-\Phi_{1} B\right) Z_{t}=a_{t}$, where $\Phi_{1}=\left[ \begin{array}{cc}{0.4} & {0.2} \\ {-0.2} & {0.8}\end{array}\right]$ and $\Sigma= I$;\\
+	(c) $Z_{t}=\left(I-\Theta_{1} B\right) a_{t}$, where $\Theta_{1}=\left[ \begin{array}{ll}{0.6} & {1.2} \\ {0.4} & {0.8}\end{array}\right]$ and $\Sigma= I$;\\
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item Stationarity or invertibility condition:
+		\begin{equation*}
+		\lambda \left| \begin{array}{cc} 1 & 0 \\ 0 & 1\end{array}\right| - \Phi_1
+		\end{equation*}
+		
+		\item VAR(1) model:
+		\begin{equation*}
+		\Sigma=\Gamma(0)-\Phi_{1} \Gamma(0) \Phi_{1}^{\prime}
+		\end{equation*}
+		\begin{equation*}
+		\Gamma(k)=\left\{\begin{array}{ll}{\Gamma(-1) \Phi_{1}^{\prime}+\Sigma,} & {\text { if } k=0} \\ {\Gamma(k-1) \Phi_{1}^{\prime}=\Gamma(0)\left(\Phi_{1}^{\prime}\right)^{k},} & {\text { if } k \geq 1}\end{array}\right.
+		\end{equation*}
+		\begin{equation*}
+		\Gamma(k)=\Gamma^{\prime}(-k) \geq 0
+		\end{equation*}
+		\begin{equation*}
+		\rho(k)=D^{-1} \Gamma(k) D^{-1}
+		\end{equation*}
+		where $D = \left[ \begin{array}{cccc}{\sigma_{11}(k)} & 0 & {\cdots} & 0 \\ 0 & {\sigma_{22}(k)} & {\cdots} & 0 \\ {\vdots} & {\vdots} & {\vdots} & {\vdots} \\ 0 & 0 & {\cdots} & {\sigma_{m m}(k)}\end{array}\right]$.
+		
+		\item solution
+		\begin{equation*}
+		\left[ \begin{array}{ll}{1} & {0} \\ {0} & {1}\end{array}\right]=\Gamma(0) - \left[ \begin{array}{ll}{0.8} & {0.3} \\ {0.1} & {0.6}\end{array}\right] \Gamma(0) \left[ \begin{array}{ll}{0.8} & {0.1} \\ {0.3} & {0.6}\end{array}\right]
+		\end{equation*}
+		\begin{equation*}
+		\rho(k)=\left[ \begin{array}{cc}{\sigma_{1}^{-1}} & {0} \\ {0} & {\sigma_{2}^{-1}}\end{array}\right]\Gamma(k) \left[ \begin{array}{cc}{\sigma^{-1}} & {0} \\ {0} & {\sigma_{2}^{-1}}\end{array}\right]=\left[ \begin{array}{cc}{\sigma_{1}^{-1}} & {0} \\ {0} & {\sigma_{2}^{-1}}\end{array}\right]\Gamma(0)\left[ \begin{array}{l}{0.8^{k} 0.1^{k}} \\ {0.3^{k} 0.6^{k}}\end{array}\right]\left[ \begin{array}{ll}{\sigma} & {-1} \\ {0} & {\sigma_{2}^{-1}}\end{array}\right]
+		\end{equation*}
+	\end{itemize}
+	
+	\item Consider the process
+	\begin{equation*}
+	\begin{array}{l}{Z_{1 t}=Z_{1, t-1}+a_{1 t}+\theta a_{1, t-1}} \\ {Z_{2 t}=\phi Z_{1 t}+a_{2 t}}\end{array}
+	\end{equation*}
+	where $|\phi|<1,|\theta|<1$ and $a_{t}=\left[a_{1 t}, a_{2 t}\right]^{\prime} \sim N(0, \Sigma)$.
+	(a) Write the process in a vector form
+	(b) Is the process $\left[Z_{1 t}, Z_{2 t}\right]^{\prime}$ stationary and invertible?
+	(c) Write down the model for the vector of the first differences $(I-B) Z_{t}$, where $Z_{t}=\left[Z_{1 t}, Z_{2 t}\right]^{\prime}$. Is the resulting model stationary and invertible?
+	
+	\textbf{Solution:}
+	\begin{itemize}
+		\item (a)
+		\begin{equation*}
+		\left[ \begin{array}{l}z_{1 t} \\ {z_{2 t}}\end{array}\right]=\left[ \begin{array}{ll}{1} & {0} \\ {\phi} & {0}\end{array}\right] \left[ \begin{array}{ll}{z_{1, t-1}} \\ {z_{2, t-2}}\end{array}\right] + \left[ \begin{array}{ll}{1} & {0} \\ {\phi} & {1}\end{array}\right] \cdot \left[ \begin{array}{l}a_{1 t} \\ a_{2 t}\end{array}\right] + \left[ \begin{array}{cc}{\theta} & {0} \\ {\phi} & {0}\end{array}\right] \left[ \begin{array}{ll}a_{1, t-1} \\ a_{2, t-1}\end{array}\right]
+		\end{equation*}
+		\item (c)
+		\begin{equation*}
+		\begin{array}{l}
+		\Delta z_{1 t}=z_{1 t}-z_{1, t-1}=a_{1}+\theta a_{1+1}\\
+		\Delta z_{2 t}=\phi \Delta z_{1 t}+a_{2 t}-a_{2, t-1} = \phi a_{1t} + \phi \theta a_{1,{t-1}} + a_{2t} - a_{2,{t-1}}
+		\end{array}
+		\end{equation*}
+		\begin{equation*}
+		\left[ \begin{array}{l}{\Delta z_{1 t}} \\ {\Delta z_{2} t}\end{array}\right]=\left[ \begin{array}{ll}{1} & {0} \\ {\phi} & {1}\end{array}\right] \cdot \left[ \begin{array}{l}{a_{1 t}} \\ a_{2 t}\end{array}\right] + \left[ \begin{array}{ll}{\theta} & {0} \\ {\phi\theta} & {-1}\end{array}\right] \cdot \left[ \begin{array}{l}a_{1, {t-1}} \\ a_{2, {t-1}}\end{array}\right]
+		\end{equation*}
+		\begin{equation*}
+		\left| \begin{array}{cc}{\lambda-\theta} & {0} \\ {\phi-\phi \theta} & {\lambda+1}\end{array}\right|=(\lambda-\theta)(\lambda+1)=0
+		\end{equation*}
+		Since $|\lambda| \geq 1$, so it's not invertible;\\
+		And it's vector MA model, so it's stationary.
+	\end{itemize}
+	
+	\item Show that the process $y_{t}=z_{t}-z_{t-1}$ is weakly stationary, where $z_{t}=0.9 z_{t-1}+a_{t}$ and $\{a_t\}$ is white noise series.
+	
+	\textbf{Solution:}
+	\begin{equation*}
+	\begin{aligned} y_{t} &=0.9 z_{t-1}+a_{t}-0.9 z_{t-2}-a_{t-1} \\ &=0.9 y_{t-1}+a_{t}-a_{t-1}\\ \Rightarrow &(1-0.9 B) y_{t}=(1-B) a_{t} \end{aligned}
+	\end{equation*}
+	Since $\left|\phi_{1}\right|=|0.9|<1$, then $y_{t}=z_{t}-z_{t-1}$ is stationary.
+\end{enumerate}
+
+\end{document}
