@@ -84,7 +84,8 @@
 	(c) $(1-0.5 B)\left(r_{t}-10\right)=a_{t}-0.9 a_{t-1}.$\\
 	where $\sigma_a^2 = 2$. Given $r_1 = 1.2$ and $r_2 = 0.1$, find the $l$-step ahead forecast values and forecast variances for $l = 1,2,3,4$.
 	
-	\textbf{Solution:}
+	\textbf{Solution:}\\
+	For AR(1) model:
 	\begin{itemize}
 		\item l-step ahead forecast:
 		\begin{equation*}
@@ -166,7 +167,6 @@
 		\item 1-step ahead forecast: $\sigma_{t}^{2}(1)=E\left(\sigma_{t+1}^{2} | \mathcal{F}_{t}\right)=\sigma_{t+1}^{2}=\alpha_{0}+\alpha_{1} Z_{t}^{2}+\beta_{1} \sigma_{t}^{2}$
 		\item 2-step ahead forecast: $\sigma_{t}^{2}(2)=E\left(\sigma_{t+2}^{2} | \mathcal{F}_{t}\right)=\alpha_{0}+E\left(\alpha_{1} \epsilon_{t+1}^{2}+\beta_{1} | \mathcal{F}_{t}\right) \sigma_{t+1}^{2}=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(1)$
 		\item In general: $\sigma_{t}^{2}(\ell)=\alpha_{0}+\left(\alpha_{1}+\beta_{1}\right) \sigma_{t}^{2}(\ell-1)$
-		\item 
 	\end{itemize}
 
 	\item Give the stationarity and invertibility conditions, MA and AR representation and ACFs of the seasonal ARMA models:\\
@@ -290,14 +290,14 @@
 	\begin{equation*}
 	\left[ \begin{array}{c}{Z_{1 t}} \\ {Z_{2 t}}\end{array}\right]=\left[ \begin{array}{c}{a_{1 t}} \\ {a_{2 t}}\end{array}\right]+\left[ \begin{array}{cc}{-0.2} & {0.1} \\ {0.5} & {0.2}\end{array}\right] \left[ \begin{array}{c}{Z_{1, t-1}} \\ {Z_{2, t-1}}\end{array}\right]+\left[ \begin{array}{cc}{0.8} & {0.7} \\ {-0.4} & {0.6}\end{array}\right] \left[ \begin{array}{c}{Z_{1, t-2}} \\ {Z_{2, t-2}}\end{array}\right]
 	\end{equation*}
-	where $\left\{\left(a_{1 t}, a_{2 t}\right)^{\prime}\right\}$ i sa sequence of i.i.d. standard normal random vectors.
+	where $\left\{\left(a_{1 t}, a_{2 t}\right)^{\prime}\right\}$ is a sequence of i.i.d. standard normal random vectors.
 	Show that it is a partially non-stationary AR model and give its cointegration vector.
 	
 	\textbf{Solution:}
 	\begin{equation*}
-	\left[ \begin{array}{ll}{1} & {0} \\ {0} & {1}\end{array}\right]-\left[ \begin{array}{cc}{-0.2} & {0.1} \\ {0.5} & {0.2}\end{array}\right]-\left[ \begin{array}{cc}{0.8} & {0.7} \\ {-0.4} & {0.6}\end{array}\right]=\left[ \begin{array}{cc}{0.4} & {-0.8} \\ {-0.1} & {0.2}\end{array}\right]=\left[ \begin{array}{c}{0.4} \\ {-0.1}\end{array}\right] \left[ \begin{array}{ll}{1} & {-2}\end{array}\right]
+	-\left[ \begin{array}{ll}{1} & {0} \\ {0} & {1}\end{array}\right]+\left[ \begin{array}{cc}{-0.2} & {0.1} \\ {0.5} & {0.2}\end{array}\right]+\left[ \begin{array}{cc}{0.8} & {0.7} \\ {-0.4} & {0.6}\end{array}\right]=\left[ \begin{array}{cc}{-0.4} & {0.8} \\ {0.1} & {-0.2}\end{array}\right]=\left[ \begin{array}{c}{-0.4} \\ {0.1}\end{array}\right] \left[ \begin{array}{ll}{1} & {-2}\end{array}\right]
 	\end{equation*}
-	Since $|1+\alpha_1+\alpha_2\beta_1| = |1+0.4+0.2| > 1$, so it's not stationary.\\
+	Since $|1+\alpha_1+\alpha_2\beta_1| = |1-0.4-0.2| < 1$, so ...\\
 	And the cointegrating vector is $\beta=\left( \begin{array}{c}{1} \\ {-2}\end{array}\right)$.
 	
 	\item Determine the stationarity and invertibility of the following two dimensional vector models and find their correlation matrix function, $\rho_k$, for $k = \pm1, \pm2, \pm3$:\\
